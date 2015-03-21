@@ -161,7 +161,7 @@ function Graph() {
     }
 
     this.vertices[hash] = v;
-                                           1
+
     // if inside an existing triangle split the triangle.
     var t = this.getContainingTriangle(v);
     if(t != null) {

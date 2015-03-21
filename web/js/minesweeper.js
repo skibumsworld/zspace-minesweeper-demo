@@ -26,10 +26,10 @@ function generateGraph() {
   }
 
   //JavaScript is the wrong platform to be running much more then 1000 vertices.
-  if(GRAPH_SIZE > 1000) {
-    GRAPH_SIZE = 1000;
-    $('#n_vertices').val(GRAPH_SIZE);
-  }
+//  if(GRAPH_SIZE > 1000) {
+//    GRAPH_SIZE = 1000;
+//    $('#n_vertices').val(GRAPH_SIZE);
+//  }
 
   // Game is boring if you have too many bombs.
   if(NUM_BOMBS > GRAPH_SIZE / 4) {
