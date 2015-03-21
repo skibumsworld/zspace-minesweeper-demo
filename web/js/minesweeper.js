@@ -215,7 +215,7 @@ function handleMouseClick(e) {
 function handleMouseWheel(event) {
   var delta = event.wheelDelta ? event.wheelDelta / 40 : event.detail ? -event.detail : 0;
   if (delta) {
-    moveCamera(2, CAMERA_POSITION[2] / 40 * delta);
+    moveCamera(2, - 1 * delta);
   }
 
   return event.preventDefault() && false;
