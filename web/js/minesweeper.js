@@ -25,10 +25,13 @@ function generateGraph() {
     return;
   }
 
+  //JavaScript is the wrong platform to be running much more then 1000 vertices.
   if(GRAPH_SIZE > 1000) {
     GRAPH_SIZE = 1000;
     $('#n_vertices').val(GRAPH_SIZE);
   }
+
+  // Game is boring if you have too many bombs.
   if(NUM_BOMBS > GRAPH_SIZE / 4) {
     NUM_BOMBS = GRAPH_SIZE / 4;
     $('#n_bombs').val(NUM_BOMBS);
@@ -43,6 +46,8 @@ function generateGraph() {
   setTimeout(addVertexLoop, 100);
 }
 
+// Adds vertices to the graph. If ANIMATE is turned on will free up the main
+// thread after each vertex addition for redraw.
 function addVertexLoop() {
   var batch_size = 100;
   var added = 0;
@@ -78,6 +83,8 @@ function addVertexLoop() {
   }
 }
 
+// Removes vertices from the graph. If ANIMATE is turned on will free up the main
+// thread after each vertex addition for redraw.
 function removeEdgeLoop() {
   var batch_size = 100;
   var removed = 0;
@@ -124,6 +131,7 @@ function removeEdgeLoop() {
   }
 }
 
+// Adds random Z-Coordinates to each vertex and sets the has_mine flag on n_bomb vertices.
 function addZandBombs(n_bombs) {
   var no_bomb_list = []
 
@@ -142,6 +150,8 @@ function addZandBombs(n_bombs) {
   GRAPH.complete = true;
 }
 
+// Sets the is_revealed flag on the vertex and adjoining vertices that don't have neighboring bombs.
+// Recursive.
 function revealVertex(v) {
   v.is_revealed = true;
   for(var i in v.edges) {
@@ -163,6 +173,8 @@ function revealVertex(v) {
   }
 }
 
+// Checks the color at the clicked location to see if there's a vertex there then unprojects
+// the click x,y coordinates and finds the clicked vertex.
 function handleMouseClick(e) {
   if(!GRAPH.complete) return;
 
@@ -199,6 +211,7 @@ function handleMouseClick(e) {
   }
 }
 
+// Very poor implementation of zoom.
 function handleMouseWheel(event) {
   var delta = event.wheelDelta ? event.wheelDelta / 40 : event.detail ? -event.detail : 0;
   if (delta) {
@@ -213,7 +226,7 @@ function checkCollinear(v1, v2, v3) {
   return v1.x * (v2.y - v3.y) + v2.x * (v3.y - v1.y) + v3.x * (v1.y - v2.y) == 0;
 }
 
-// Checks if 2 segments intersect
+// Checks if two 2D segments intersect
 function checkSegmentIntersect(l1, l2) {
   if(l1.indexOf(l2[0]) >= 0 || l1.indexOf(l2[1]) >= 0) return false;
 

@@ -1,3 +1,5 @@
+// Extra Sloppy/Extra Basic WebGL code.
+
 var GL;
 var ASPECT_RATIO;
 var SHADER_PROGRAM;

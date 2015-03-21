@@ -7,7 +7,6 @@ function Graph() {
   this.generation_time = 0;
   this.edge_density = 5;
   this.complete = false;
-  this.vertext_list = []; // Useful for traversing vertices.
 
   // Adds a Triangle to the graph and updates necessary caches.
   // Note: This does not do any flipping.
@@ -21,7 +20,6 @@ function Graph() {
       if(edge == null) {
         edge = new Edge(v1, v2);
 
-        edge.triangles.push(t);
         v1.edges.push(edge);
         v2.edges.push(edge);
 
@@ -29,9 +27,9 @@ function Graph() {
         this.outer_edge.push(edge);
       } else {
         this.outer_edge.splice(this.outer_edge.indexOf(edge), 1);
-        edge.triangles.push(t);
       }
 
+      edge.triangles.push(t);
       t.edges.push(edge);
     }
   }
@@ -67,9 +65,7 @@ function Graph() {
     var flip_counter = 0;
     var neighbors = t.getNeighbors(this);
     var affected = [];
-    for(var i in neighbors) {
-      affected.push([t, neighbors[i]]);
-    }
+    for(var i in neighbors)  affected.push([t, neighbors[i]]);
 
     while(true) {
       var needs_flip = [];
@@ -81,6 +77,7 @@ function Graph() {
         }
       }
 
+      // If all the neighbors meet the Delaunay condition then we're done.
       if(needs_flip.length == 0) break;
 
       affected = [];
@@ -313,7 +310,8 @@ function Graph() {
     var v1 = edge.vertices[0];
     var v2 = edge.vertices[1];
 
-    // DFS search to find a path from v1 to v2 that doesn't use the edge.
+    // DFS search to find a path from v1 to v2 that doesn't use the input edge.
+    // Edges for each vertex are sorted by angle so loops/circles are found quickly.
     var visited = {};
     var path = [v1];
     var next = v2;
