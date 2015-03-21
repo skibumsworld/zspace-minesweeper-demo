@@ -1,0 +1,95 @@
+<html>
+  <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="js/gl-matrix-min.js"></script>
+    <script src="js/webgl_helper.js"></script>
+    <script src="js/triangle.js"></script>
+    <script src="js/graph.js"></script>
+    <script src="js/minesweeper.js"></script>
+  </head>
+  <body>
+    <div style="margin:0 auto;max-width:900px;">
+      <div style="margin: 10px 30px;float: left;">
+        <canvas id="webgl_canvas" style="border:1px solid black;" width=500 height=500></canvas>
+        <div id="camera_controls" style="text-align: center;margin-top:20px;">
+          <button onclick="moveCamera(1, 1)">up</button>
+          <br/>
+          <button onclick="moveCamera(0, -1)">left</button>
+          <button onclick="moveCamera(0, 1)">right</button>
+          <br/>
+          <button onclick="moveCamera(1, -1)">down</button>
+          <br/>&nbsp;<br/>
+          <button onclick="rotateCamera(0, -1)">rotate up</button>
+          <br/>
+          <button onclick="rotateCamera(1, -1)">rotate left</button>
+          <button onclick="rotateCamera(1, 1)">rotate right</button>
+          <br/>
+          <button onclick="rotateCamera(0, 1)">rotate down</button>
+          <br/>&nbsp;<br/>
+          <button onclick="resetCamera()">Reset Camera</button>
+        </div>
+      </div>
+      <div style="margin: 10px auto;float: left;max-width: 300px">
+        <label for="n_vertices">Number of Vertices</label>
+        <input id="n_vertices" type="text" value="30"/>
+        <br/>&nbsp;<br/>
+        <label for="n_bombs">Number of Bombs</label>
+        <input id="n_bombs" type="text" value="5"/>
+        <br/>&nbsp;<br/>
+        <label for="edge_density">Edge Density(1 - 10)</label>
+        <input id="edge_density" type="text" value="5"/>
+        <br/>&nbsp;<br/>
+        <label for="animate_creation">Animate Graph Creation?</label>
+        <input id="animate_creation" type="checkbox" checked/>
+        <br/>
+        <span>(Turn off to make things faster)</span>
+        <br/>&nbsp;<br/>
+        <button onclick="generateGraph()">Generate Graph</button>
+        <br/>&nbsp;<br/>
+        <span id="generate_status"></span>
+      </div>
+      <div class="clear"></div>
+    </div>
+  </body>
+  <script id="shader-fs" type="x-shader/x-fragment">
+    precision mediump float;
+    varying vec4 current_color;
+
+    void main(void) {
+      gl_FragColor = current_color;
+    }
+  </script>
+  <script id="shader-vs" type="x-shader/x-vertex">
+    attribute vec3 vertex_pos;
+    attribute vec4 vertex_color;
+
+    uniform mat4 mv_matrix; // Model-View
+    uniform mat4 p_matrix; // Perspective
+
+    varying vec4 current_color;
+
+    void main(void) {
+      gl_Position = p_matrix * mv_matrix * vec4(vertex_pos, 1.0);
+      gl_PointSize = 10.0;
+      current_color = vertex_color;
+    }
+  </script>
+  <script type="text/javascript">
+    $(document).ready(function() {
+      initWebGL();
+
+      var canvas = $('#webgl_canvas');
+      canvas.click(function(e) {
+        handleMouseClick(e);
+      });
+
+      canvas = canvas[0];
+      canvas.addEventListener('DOMMouseScroll',handleMouseWheel,false);
+      canvas.addEventListener('mousewheel',handleMouseWheel,false);
+      GRAPH = new Graph();
+      GRAPH_SIZE = 100;
+      createSurfaceBuffers();
+      resetCamera();
+    })
+  </script>
+</html>
